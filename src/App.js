@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import BraftEditor from './packages/braft-editor'
+import './packages/braft-editor/assets/scss/output.scss'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class EditorDemo extends React.Component {
+
+  state = {
+    editorState: null
+  }
+
+  async componentDidMount() {
+    // Assume here to get the editor content in html format from the server
+    // Use BraftEditor.createEditorState to convert html strings to editorState data needed by the editor
+    this.setState({
+      editorState: BraftEditor.createEditorState("")
+    })
+  }
+
+  submitContent = async () => {
+    // Pressing ctrl + s when the editor has focus will execute this method
+    // Before the editor content is submitted to the server, you can directly call editorState.toHTML () to get the HTML content
+    const htmlContent = this.state.editorState.toHTML()
+    // const result = await saveEditorContent(htmlContent)
+  }
+
+  handleEditorChange = (editorState) => {
+    this.setState({ editorState })
+  }
+
+  render() {
+
+    const { editorState } = this.state
+
+    return (
+      <div className="my-component">
+        <BraftEditor
+          value={editorState}
+          onChange={this.handleEditorChange}
+          onSave={this.submitContent}
+        />
+      </div>
+    )
+
+  }
+
 }
-
-export default App;
